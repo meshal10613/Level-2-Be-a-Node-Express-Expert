@@ -12,7 +12,7 @@ Node.js এ fs মডিউল দিয়ে ফাইল ডিলিট কর�
 
 /*  
 ===========================================
- ১) fs.unlink() — Asynchronous File Delete
+  ১) fs.unlink() — Asynchronous File Delete
 ===========================================
 
 Non-blocking → Node.js অন্য কাজ চালিয়ে যেতে পারবে।  
@@ -22,15 +22,15 @@ Non-blocking → Node.js অন্য কাজ চালিয়ে যেতে 
 const fs = require("fs");
 
 fs.unlink("data.txt", (err) => {
-  if (err) {
-    console.log(" File delete hoini");
-    return;
-  }
-  console.log("✅ File successfully deleted!");
+    if (err) {
+        console.log(" File delete hoini");
+        return;
+    }
+    console.log("✅ File successfully deleted!");
 });
 
 /*
- ব্যাখ্যা:
+  ব্যাখ্যা:
 - "data.txt" ফাইল ডিলিট হবে
 - ফাইল না থাকলে → error আসবে
 - ফাইল থাকলে → ডিলিট হয়ে যাবে
@@ -46,10 +46,10 @@ Blocking → Node.js অপেক্ষা করবে ফাইল ডিল�
 */
 
 try {
-  fs.unlinkSync("data.txt");
-  console.log(" File successfully deleted!");
+    fs.unlinkSync("data.txt");
+    console.log(" File successfully deleted!");
 } catch (err) {
-  console.log(" File delete hoini");
+    console.log(" File delete hoini");
 }
 
 /*  
@@ -64,7 +64,7 @@ try {
 
 /*  
 ===========================================
- Important Notes
+  Important Notes
 ===========================================
 - ফাইল না থাকলে error → "ENOENT"  
 - ফোল্ডার ডিলিট করতে → fs.rmdir() বা fs.rm()  
@@ -78,15 +78,15 @@ try {
 */
 
 if (fs.existsSync("test.txt")) {
-  fs.unlink("test.txt", (err) => {
-    if (err) {
-      console.log(" Delete korte problem holo");
-      return;
-    }
-    console.log(" File deleted successfully!");
-  });
+    fs.unlink("test.txt", (err) => {
+        if (err) {
+            console.log(" Delete korte problem holo");
+            return;
+        }
+        console.log(" File deleted successfully!");
+    });
 } else {
-  console.log("ℹ File ei nai!");
+    console.log("ℹ File ei nai!");
 }
 
 //⁡⁣⁣⁢ ****   নিচের গুলো optional কেননা এগুলো class এ পড়ায়নি⁡
@@ -112,11 +112,11 @@ const fs = require("fs");
 
 // data.txt নামের ফাইলকে newData.txt নামেও rename করা
 fs.rename("data.txt", "newData.txt", (err) => {
-  if (err) {
-    console.log("❌ File rename korte problem holo", err);
-    return;
-  }
-  console.log("✅ File renamed successfully!");
+    if (err) {
+        console.log("❌ File rename korte problem holo", err);
+        return;
+    }
+    console.log("✅ File renamed successfully!");
 });
 
 /*
@@ -136,10 +136,10 @@ Blocking → Node.js অপেক্ষা করবে ফাইল rename হ�
 */
 
 try {
-  fs.renameSync("newData.txt", "finalData.txt");
-  console.log("✅ File renamed successfully!");
+    fs.renameSync("newData.txt", "finalData.txt");
+    console.log("✅ File renamed successfully!");
 } catch (err) {
-  console.log("❌ File rename korte problem holo", err);
+    console.log("❌ File rename korte problem holo", err);
 }
 
 /*  
@@ -161,11 +161,11 @@ Non-blocking → অন্য কোড চলতে থাকবে
 */
 
 fs.mkdir("myFolder", (err) => {
-  if (err) {
-    console.log("❌ Folder create korte problem holo", err);
-    return;
-  }
-  console.log("✅ Folder created successfully!");
+    if (err) {
+        console.log("❌ Folder create korte problem holo", err);
+        return;
+    }
+    console.log("✅ Folder created successfully!");
 });
 
 /*
@@ -183,10 +183,10 @@ Blocking → Node.js অপেক্ষা করবে ফোল্ডার �
 */
 
 try {
-  fs.mkdirSync("myFolderSync");
-  console.log("✅ Folder created successfully!");
+    fs.mkdirSync("myFolderSync");
+    console.log("✅ Folder created successfully!");
 } catch (err) {
-  console.log("❌ Folder create korte problem holo", err);
+    console.log("❌ Folder create korte problem holo", err);
 }
 
 /*  
@@ -198,11 +198,11 @@ fs.mkdir("parentFolder/childFolder", { recursive: true }, callback)
 */
 
 fs.mkdir("parentFolder/childFolder", { recursive: true }, (err) => {
-  if (err) {
-    console.log("❌ Problem holo", err);
-    return;
-  }
-  console.log("✅ Nested folder created successfully!");
+    if (err) {
+        console.log("❌ Problem holo", err);
+        return;
+    }
+    console.log("✅ Nested folder created successfully!");
 });
 
 /*
