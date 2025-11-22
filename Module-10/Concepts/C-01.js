@@ -13,10 +13,10 @@ Node.js এ ফাইল পড়তে (read করতে) আমরা ব্য
 const fs = require("fs");
 
 /*
- ⁡⁣⁣⁢fs দিয়ে ফাইল পড়ার ৩টি জনপ্রিয় উপায় আছে:⁡ 
+  ⁡⁣⁣⁢fs দিয়ে ফাইল পড়ার ৩টি জনপ্রিয় উপায় আছে:⁡ 
 
- ⁡⁢⁣⁡⁢⁣⁢আমদের class a এ শুধু ২ টা পড়িয়েছে ⁡
- 
+  ⁡⁢⁣⁡⁢⁣⁢আমদের class a এ শুধু ২ টা পড়িয়েছে ⁡
+
 ===========================================
 ✅ 1) ⁡⁣⁣⁢Synchronous file reading⁡ → fs.readFileSync()
 ===========================================
@@ -45,11 +45,11 @@ dataSync → পুরো ফাইলের কনটেন্ট
 */
 
 fs.readFile("text.txt", "utf-8", (err, dataAsync) => {
-  if (err) {
-    console.log("❌ Error reading file:", err);
-    return;
-  }
-  console.log("📄 Async Read:", dataAsync);
+    if (err) {
+        console.log("❌ Error reading file:", err);
+        return;
+    }
+    console.log("📄 Async Read:", dataAsync);
 });
 
 /*
@@ -69,12 +69,12 @@ dataAsync → ফাইল সঠিকভাবে পড়লে কনটেন
 const fsPromise = require("fs").promises;
 
 async function readFile() {
-  try {
-    const data = await fsPromise.readFile("text.txt", "utf-8");
-    console.log("📄 Promise Read:", data);
-  } catch (error) {
-    console.log("❌ Error:", error);
-  }
+    try {
+        const data = await fsPromise.readFile("text.txt", "utf-8");
+        console.log("📄 Promise Read:", data);
+    } catch (error) {
+        console.log("❌ Error:", error);
+    }
 }
 
 readFile();
