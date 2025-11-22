@@ -1,0 +1,134 @@
+const fs = require("fs");
+const path = require("path");
+
+const sourceDir = path.join(__dirname, "output", "messy-files");
+const organizedDir = path.join(__dirname, "output", "organized");
+
+const categories = {
+    images: [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"],
+    documents: [".pdf", ".doc", ".docx", ".txt", ".rtf"],
+    videos: [".mp4", ".avi", ".mkv", ".mov", ".wmv"],
+    audio: [".mp3", ".wav", ".flac", ".aac", ".ogg"],
+    code: [".js", ".py", ".java", ".cpp", ".html", ".css"],
+    archives: [".zip", ".rar", ".tar", ".gz", ".7z"],
+    spreadsheets: [".xls", ".xlsx", ".csv"],
+    others: [],
+};
+
+const testFiles = [
+    "vacation.jpg",
+    "report.pdf",
+    "resume.docx",
+    "travel.mp4",
+    "music.mp3",
+    "photos.zip",
+    "code.js",
+    "documents.tar.gz",
+    "spreadsheet.xls",
+    "presentation.pptx",
+    "video.mov",
+    "audio.flac",
+];
+
+function initializeDirectories() {
+    if (!fs.existsSync(sourceDir)) {
+        //? create sourceDir
+        fs.mkdirSync(sourceDir, { recursive: true });
+
+        testFiles.forEach((file) => {
+            fs.writeFileSync(path.join(sourceDir, file), `Content of ${file}`);
+        });
+    }
+
+    console.log("Messy directories files are created!");
+
+    if (!fs.existsSync(organizedDir)) {
+        //? create organizedDir
+        fs.mkdirSync(organizedDir, { recursive: true });
+
+        //? create the folders for each category key
+        Object.keys(categories).forEach((category) => {
+            const categoryPath = path.join(organizedDir, category);
+            if (!fs.existsSync(categoryPath)) {
+                fs.mkdirSync(categoryPath);
+            }
+        });
+    }
+}
+
+function getCategory(fileName) {
+    const ext = path.extname(fileName).toLowerCase();
+    for (const [category, extensions] of Object.entries(categories)) {
+        if (extensions.includes(ext)) {
+            return category;
+        }
+    }
+    return "others";
+}
+
+function organizeFiles() {
+    console.log("file organizer \n");
+    console.log("source: ", sourceDir);
+    console.log("Destination: ", organizedDir);
+    console.log("\n" + "-".repeat(50) + "\n");
+
+    const files = fs.readdirSync(sourceDir); // messy-files থেকে সব files পড়ো
+
+    if (files.length === 0) {
+        console.log("No files to work on!!");
+        return;
+    }
+
+    console.log(`found ${files.length} files to organize \n`);
+
+    const stats = {
+        total: 0,
+        byCategory: {},
+    };
+
+    files.forEach((file) => {
+        const sourcePath = path.join(sourceDir, file);
+        const stat = fs.statSync(sourcePath);
+        if (stat.isDirectory()) {
+            return;
+        }
+
+        const category = getCategory(file);
+        const destDir = path.join(organizedDir, category);
+        const destPath = path.join(destDir, file);
+
+        fs.copyFileSync(sourcePath, destPath);
+        stats.total++;
+        stats.byCategory[category] = (stats.byCategory[category] || 0) + 1;
+    });
+}
+
+function showHelp() {
+    console.log(`
+		file organizer - usage:
+
+        commands: 
+        init - create files
+        organize - organize files into categories
+
+        example:
+        node file-organizer init
+        node file-organizer organize
+	`);
+}
+
+const command = process.argv[2];
+
+switch (command) {
+	case "init":
+		initializeDirectories();
+		break;
+
+	case "organize":
+		organizeFiles();
+		break;
+
+	default:
+		showHelp();
+		break;
+}
