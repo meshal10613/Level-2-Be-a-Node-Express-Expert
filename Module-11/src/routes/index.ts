@@ -23,8 +23,7 @@ addRoutes("POST", "/api/users", async (req, res) => {
     const body = await parseBody(req);
 
     const users = readUsers();
-    const newUser = { id: Date.now(), ...body };
-    users.push(newUser);
+    users.push(body);
     writeUsers(users);
 
     sendJson(res, 200, { success: true, path: req.url, data: body });

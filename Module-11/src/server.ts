@@ -3,6 +3,36 @@ import config from "./config";
 import { RouteHandler, routes } from "./helpers/RouteHandler";
 import "./routes";
 
+function findDynamicRoute (method: string, url: string) {
+    const methodMap = routes.get(method);
+    if(!methodMap) return null;
+
+    for(const [routePath, handler] of methodMap.entries()){
+        const routesParts = routePath.split("/");
+        const urlParts = url.split("/");
+
+        if(routesParts.length !== urlParts.length) continue;
+
+        const params: any = {};
+        let matched = true;
+
+        for(let i = 0; i < routesParts.length; i++){
+            if(routesParts[i]?.startsWith(":")){
+                params[routesParts[i]?.substring(1)!] = urlParts[i];
+            } else if(routesParts[i] !== urlParts[i]){
+                matched = false;
+                break;
+            } 
+        }
+
+        if(matched){
+            return { handler, params };
+        }
+    }
+
+    return null;
+}
+
 
 const server: Server = http.createServer(
     (req: IncomingMessage, res: ServerResponse) => {
@@ -13,6 +43,10 @@ const server: Server = http.createServer(
 
         if (handler) {
             handler(req, res);
+        } else if(findDynamicRoute(method, path)){
+            const match = findDynamicRoute(method, path);
+            (req as any).params = match?.params;
+            match?.handler(req, res);
         } else {
             res.writeHead(404, { "Content-Type": "application/json" });
             res.end(
