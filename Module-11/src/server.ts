@@ -23,23 +23,6 @@ const server: Server = http.createServer(
                 })
             );
         }
-
-        if (req.url === "/api/users" && req.method === "POST") {
-            let body = "";
-            // listen for data chunk
-            req.on("data", (chunk) => {
-                body += chunk.toString();
-            });
-
-            req.on("end", () => {
-                try {
-                    const parseBody = JSON.parse(body);
-                    res.end(JSON.stringify(parseBody));
-                } catch (error: any) {
-                    res.end(error.message);
-                }
-            });
-        }
     }
 );
 
