@@ -42,3 +42,17 @@ addRoutes("PUT", "/api/users/:id", async(req, res) => {
 
     sendJson(res, 200, { success: true, path: req.url, data: users[index] });
 });
+
+addRoutes("DELETE", "/api/users/:id", (req, res) => {
+    const { id } = (req as any).params;
+    const users = readUsers();
+
+    const index = users.findIndex((user: any) => user.id == id);
+    if(index === -1) return sendJson(res, 404, { success: false, path: req.url, message: "User not found!" });
+
+    users.splice(index, 1);
+    console.log(users)
+    writeUsers(users);
+
+    sendJson(res, 200, { success: true, path: req.url });
+})
