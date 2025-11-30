@@ -1,15 +1,36 @@
+import dotenv from "dotenv";
 import express, { Request, Response } from "express";
 import { Pool } from "pg";
+import config from "./config";
 
+dotenv.config();
 const app = express();
-const port = 5000;
-const pool = new Pool({
-	connectionString: `postgresql://neondb_owner:npg_Ya2ndR5HLWwg@ep-tiny-wind-a4wnhzgh-pooler.us-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require`
-})
+const port = config.app.port;
 
 //? middleware
 app.use(express.json()); // for json data
 app.use(express.urlencoded()); // for form data
+
+const pool = new Pool({
+    connectionString: config.app.psql_string,
+});
+
+const initDB = async () => {
+    await pool.query(`
+		CREATE TABLE IF NOT EXISTS users (
+			id SERIAL PRIMARY KEY,
+			name VARCHAR(255) NOT NULL,
+			email VARCHAR(255) UNIQUE NOT NULL,
+			age INT,
+			phone VARCHAR(20),
+			address TEXT,
+			created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+			)
+	`);
+};
+
+initDB();
 
 app.get("/", async (req: Request, res: Response) => {
     res.send("Hello World!");
