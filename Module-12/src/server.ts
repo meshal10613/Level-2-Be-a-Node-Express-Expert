@@ -27,7 +27,7 @@ const initDB = async () => {
 		)
 	`);
 
-	await pool.query(`
+    await pool.query(`
 		CREATE TABLE IF NOT EXISTS todos (
 			id SERIAL PRIMARY KEY,
 			user_id INT REFERENCES users(id) ON DELETE CASCADE,
@@ -47,16 +47,29 @@ app.get("/", async (req: Request, res: Response) => {
     res.send("Hello World!");
 });
 
-app.post("/", async (req: Request, res: Response) => {
-    const data = req.body;
-    console.log(data);
+app.post("/users", async (req: Request, res: Response) => {
+    try {
+        const data = req.body;
+        const result = await pool.query(
+            `
+			INSERT INTO users (name, email) VALUES ($1, $2) RETURNING *
+		`,
+            [data.name, data.email]
+        );
 
-    res.status(201).json({
-        success: true,
-        message: "API is working....",
-        path: req.url,
-        data: req.body,
-    });
+        res.status(201).json({
+            success: true,
+            message: "Data Insertded Successfully....!",
+            path: req.url,
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+            path: req.url,
+        });
+    }
 });
 
 app.listen(port, () => {
