@@ -84,13 +84,78 @@ app.get("/users/:id", async (req: Request, res: Response) => {
                 success: false,
                 message: "User Not Found!",
             });
-        };
+        }
 
         res.status(200).json({
             path: req.url,
             success: true,
             message: "User Retrieved Successfully....!",
             data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
+app.put("/users/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const { name, email } = req.body;
+        const result = await pool.query(
+            `UPDATE users SET name = $1, email= $2 WHERE id = $3 RETURNING *`,
+            [name, email, id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                path: req.url,
+                success: false,
+                message: "User Not Found!",
+            });
+        }
+
+        res.status(200).json({
+            path: req.url,
+            success: true,
+            message: "User Updated Successfully....!",
+            data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
+app.delete("/users/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query(
+            `DELETE FROM users WHERE id = $1 RETURNING *`,
+            [id]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                path: req.url,
+                success: false,
+                message: "User Not Found!",
+            });
+        }
+
+        res.status(200).json({
+            path: req.url,
+            success: true,
+            message: "User Deleted Successfully....!",
+            data: null,
         });
     } catch (error: any) {
         res.status(500).json({
