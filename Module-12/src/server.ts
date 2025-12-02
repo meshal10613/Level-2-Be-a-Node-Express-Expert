@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { Pool } from "pg";
 import config from "./config";
+import path from "path";
 
 const app = express();
 const port = config.app.port;
@@ -47,6 +48,60 @@ app.get("/", async (req: Request, res: Response) => {
     res.send("Hello World!");
 });
 
+//* users CRUD
+app.get("/users", async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(`
+			SELECT * FROM users
+		`);
+
+        res.status(200).json({
+            path: req.url,
+            success: true,
+            message: "Users Retrieved Successfully....!",
+            data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
+app.get("/users/:id", async (req: Request, res: Response) => {
+    try {
+        const { id } = req.params;
+        const result = await pool.query(`SELECT * FROM users WHERE id = $1`, [
+            id,
+        ]);
+
+        if (result.rows.length === 0) {
+            return res.status(404).json({
+                path: req.url,
+                success: false,
+                message: "User Not Found!",
+            });
+        };
+
+        res.status(200).json({
+            path: req.url,
+            success: true,
+            message: "User Retrieved Successfully....!",
+            data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
 app.post("/users", async (req: Request, res: Response) => {
     try {
         const data = req.body;
@@ -58,16 +113,17 @@ app.post("/users", async (req: Request, res: Response) => {
         );
 
         res.status(201).json({
+            path: req.url,
             success: true,
             message: "Data Insertded Successfully....!",
-            path: req.url,
             data: result.rows[0],
         });
     } catch (error: any) {
         res.status(500).json({
+            path: req.url,
             success: false,
             message: error.message,
-            path: req.url,
+            details: error,
         });
     }
 });
