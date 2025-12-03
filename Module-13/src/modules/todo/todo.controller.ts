@@ -3,9 +3,7 @@ import { todoServices } from "./todo.service";
 
 const createTodo = async (req: Request, res: Response) => {
     try {
-        const { user_id, title } = req.body;
-
-        const result = await todoServices.createTodo(user_id, title);
+        const result = await todoServices.createTodo(req.body);
         res.status(201).json({
             path: req.url,
             success: true,
