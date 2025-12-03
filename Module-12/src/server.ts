@@ -143,7 +143,7 @@ app.delete("/users/:id", async (req: Request, res: Response) => {
             [id]
         );
 
-        if (result.rows.length === 0) {
+        if (result.rowCount === 0) {
             return res.status(404).json({
                 path: req.url,
                 success: false,
@@ -181,6 +181,53 @@ app.post("/users", async (req: Request, res: Response) => {
             path: req.url,
             success: true,
             message: "Data Insertded Successfully....!",
+            data: result.rows[0],
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
+//* todos CRUD
+app.get("/todos", async (req: Request, res: Response) => {
+    try {
+        const result = await pool.query(`
+			SELECT * FROM todos
+		`);
+
+        res.status(200).json({
+            path: req.url,
+            success: true,
+            message: "Todos Retrieved Successfully....!",
+            data: result.rows,
+        });
+    } catch (error: any) {
+        res.status(500).json({
+            path: req.url,
+            success: false,
+            message: error.message,
+            details: error,
+        });
+    }
+});
+
+app.post("/todos", async (req: Request, res: Response) => {
+    try {
+        const { user_id, title } = req.body;
+
+        const result = await pool.query(
+            `INSERT INTO todos (user_id, title) VALUES ($1, $2) RETURNING *`,
+            [user_id, title]
+        );
+        res.status(201).json({
+            path: req.url,
+            success: true,
+            message: "Todos Insertded Successfully....!",
             data: result.rows[0],
         });
     } catch (error: any) {
