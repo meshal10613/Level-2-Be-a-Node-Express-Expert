@@ -1,7 +1,6 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import { Pool } from "pg";
 import config from "./config";
-import path from "path";
 
 const app = express();
 const port = config.app.port;
@@ -44,7 +43,13 @@ const initDB = async () => {
 
 initDB();
 
-app.get("/", async (req: Request, res: Response) => {
+// logger middleware
+const logger = (req: Request, res: Response, next: NextFunction) => {
+    console.log(true)
+    next();
+};
+
+app.get("/", logger, async (req: Request, res: Response) => {
     res.send("Hello World!");
 });
 
@@ -238,6 +243,14 @@ app.post("/todos", async (req: Request, res: Response) => {
             details: error,
         });
     }
+});
+
+app.use((req: Request, res: Response) => {
+    res.status(404).json({
+        path: req.url,
+        success: false,
+        message: "Not Found!",
+    });
 });
 
 app.listen(port, () => {
