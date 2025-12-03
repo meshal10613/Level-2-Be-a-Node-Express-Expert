@@ -7,7 +7,8 @@ const config = {
 	app: {
 		port: process.env.PORT || 5000,
 		env: process.env.NODE_ENV || "development",
-		psql_string: process.env.PSQL_STRING
+		psql_string: process.env.PSQL_STRING,
+		jwt_secret: process.env.JWT_SECRET
 	}
 };
 
