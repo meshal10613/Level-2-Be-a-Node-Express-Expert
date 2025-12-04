@@ -21,7 +21,7 @@ const loginUser = async (email: string, password: string) => {
         return { message: "Email does not match!" };
     }
 
-    const token = jwt.sign({ name: user.name, email: user.email }, config.app.jwt_secret as string, {
+    const token = jwt.sign({ name: user.name, email: user.email, role: user.role }, config.app.jwt_secret as string, {
         expiresIn: "1d",
     });
     delete user.password;
