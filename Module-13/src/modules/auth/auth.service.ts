@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { pool } from "../../config/db";
+import config from "../../config";
 
 const loginUser = async (email: string, password: string) => {
     const isExist = await pool.query(`SELECT * FROM users WHERE email = $1`, [
@@ -20,10 +21,10 @@ const loginUser = async (email: string, password: string) => {
         return { message: "Email does not match!" };
     }
 
-    const secret = "KMUFsIDTnFmyG3nMiGM6H9FNFUROf3wh7SmqJp-QV30";
-    const token = jwt.sign({ name: user.name, email: user.email }, secret, {
+    const token = jwt.sign({ name: user.name, email: user.email }, config.app.jwt_secret as string, {
         expiresIn: "1d",
     });
+    delete user.password;
     return { user, token };
 };
 

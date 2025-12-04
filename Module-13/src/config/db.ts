@@ -3,6 +3,7 @@ import config from ".";
 
 export const pool = new Pool({
     connectionString: config.app.psql_string,
+	ssl: { rejectUnauthorized: false },
 });
 
 const initDB = async () => {
